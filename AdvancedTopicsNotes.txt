@@ -1,0 +1,96 @@
+Advanced Topics:
+
+    1. Feature Engineering and Preprocessing:
+        - Handling missing values: Missing values can occur in datasets for various reasons, such as data entry errors, sensor malfunctions, or incomplete information. Handling these missing values is crucial to prevent erros in the analysis and modeling process.
+
+            Stategies for Handling Missing Values:
+                - Remove Missing Values: If the number of missing values is small, you can simply remove the rows or columns with missing values
+                - Impute Missing Values: Replace missing values with some estimated values, such as the mean, median, or mode of the colum, or use more sophisticated methods likes regression imputation or k-nearest neighbors imputation 
+                - Flag and Fill: Create an additional feature indicating the presence of a missing value and fill the missing values wiht a specific value
+
+            Here's an example using 'pandas':
+            {
+            import pandas as pd
+            
+            # Example data with missing values
+            data = {
+                'Age': [25, 30, None, 28, 35, 27, None, 29, 24],
+                'Gender': ['Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female', None],
+                'Music': ['Rock', 'Pop', 'Jazz', None, 'Pop', 'Rock', 'Jazz', 'Classical', 'Pop'],
+                'Target': [1, 0, 1, 0, 0, 1, 1, 0, 1]
+            }
+            
+            df = pd.DataFrame(data)
+            
+            # Handling missing values
+            df.dropna(inplace=True)  # Remove rows with any missing values
+            # Or, for imputation:
+            # df['Age'].fillna(df['Age'].mean(), inplace=True)
+            # df['Gender'].fillna('Unknown', inplace=True)
+            # df['Music'].fillna(df['Music'].mode()[0], inplace=True)
+            
+            print(df)
+            }
+
+        - Scaling and normalization: Scaling and normalization are important preprocessing steps to ensure the features contribute equally to the model's performance. Many machine learning algorithms perform better when the features are on a similar scale.
+
+        Scaling: Scaling transforms the data so that it fits within a specific range, typically 0 to 1 or -1 to 1. The most common scaling methods are:
+
+            - Min-Max Scaling: Transforms features by scaling each feature to a given range.
+            - Standardization: Transforms features to have zero mean and unit variance.
+
+            Here's an exampel using 'scikit-learn':
+            {
+            from sklearn.preprocessing import StandardScaler, MinMaxScaler
+            
+            # Example data
+            data = {
+                'Age': [25, 30, 22, 28, 35, 27, 31, 29, 24],
+                'Salary': [50000, 60000, 52000, 58000, 62000, 54000, 65000, 59000, 56000]
+            }
+            
+            df = pd.DataFrame(data)
+            
+            # Scaling the data
+            scaler = StandardScaler()
+            df_scaled = scaler.fit_transform(df)
+            
+            print(df_scaled)
+            }
+
+        - Encoding categorical features: Machine learning models require numerical input, so categorical features need to converted into numerical values. This process is called encoding.
+
+        Common Encoding Methods: 
+            - Label Encoding: Converts each category to a unique integer
+            - One-Hot Encoding: Creates a binary column for each category
+            - Target Encoding: Replaces each category with the mean to the target variable for that category
+
+            Here's an example using 'scikit-learn':
+            {
+            from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+            
+            # Example data
+            data = {
+                'Gender': ['Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male'],
+                'Music': ['Rock', 'Pop', 'Jazz', 'Classical', 'Pop', 'Rock', 'Jazz', 'Classical', 'Pop']
+            }
+            
+            df = pd.DataFrame(data)
+            
+            # Label Encoding
+            label_encoder = LabelEncoder()
+            df['Gender_Encoded'] = label_encoder.fit_transform(df['Gender'])
+            df['Music_Encoded'] = label_encoder.fit_transform(df['Music'])
+            
+            # One-Hot Encoding
+            one_hot_encoder = OneHotEncoder(sparse=False)
+            music_one_hot = one_hot_encoder.fit_transform(df[['Music']])
+            
+            # Convert the array back to a DataFrame and concatenate with the original DataFrame
+            music_one_hot_df = pd.DataFrame(music_one_hot, columns=one_hot_encoder.get_feature_names_out(['Music']))
+            df = pd.concat([df, music_one_hot_df], axis=1)
+            
+            print(df)
+            }
+
+Reference Iris script for example of how to integrate these concepts into your script.
